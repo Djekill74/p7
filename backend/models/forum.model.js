@@ -6,14 +6,6 @@ module.exports = (sequelize, Sequelize) => {
       texte: {
         type: Sequelize.TEXT('medium')
       },
-      idUsers: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references: {
-            model:'users',
-            key: 'id'
-        }
-    }
 
     });
   

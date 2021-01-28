@@ -14,8 +14,11 @@ exports.signup = (req, res, next) => {
           .then(hash => {
             console.log(hash)
             const user = new User({
+              usename: req.body.username,
               email: req.body.email,
-              password: hash
+              password: hash,
+              role: "participant",
+              createdAt: new Date()
             })
             user.save()
               .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))

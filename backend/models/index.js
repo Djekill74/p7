@@ -23,22 +23,16 @@ db.forum = require("./forum.model")(sequelize, Sequelize);
 db.user = require('./user.model')(sequelize, Sequelize);
 db.response = require('./response.model')(sequelize, Sequelize);
 
-//db.forum.hasMany(db.response, {as: 'responsesSubject'});
-//db.response.belongsTo(db.forum, {
-//  foreignKey: 'id', as: 'responseSubject'
-//})
-
-//db.user.hasMany(db.forum, {as: 'subject'})
-//db.forum.belongsTo(db.user, {
-//  foreignKey: 'id', as:'subject'
-//})
-
-//db.user.hasMany(db.response, {as: 'responsesUser'})
-//db.response.belongsTo(db.user, {
-//  foreignKey: 'id', as: 'responseUser'
-//})
 
 
+db.user.hasMany(db.forum)
+db.forum.belongsTo(db.user)
+
+db.user.hasMany(db.response)
+db.response.belongsTo(db.user)
+
+db.forum.hasMany(db.response)
+db.response.belongsTo(db.forum)
 
 
 

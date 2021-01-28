@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 })
 
 const db = require("./models");
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
   // enlever parametre force: true passer a force: false ou enlever l'objet
   console.log("Drop and re-sync db.");
 });

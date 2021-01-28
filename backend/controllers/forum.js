@@ -2,41 +2,43 @@ const { forum } = require("../models");
 const db = require("../models");
 const Forum = db.forum;
 const User = db.user;
-//const Op = db.Sequelize.Op;
+const Response = db.response;
 
 
-exports.createSubjet = (req, res, next) => {
-  console.log(req.body)
-  const subjectObject = req.body
-  //suppresion de JSON.parse et forum
-  //  delete subjectObject._id
-  console.log(req.body.userId)
+
+exports.createSubjet = (req, res, next) => {  
+  const subjectObject = req.body 
   User.findOne({
     where: { id: req.body.userId }
   })
     .then(subject => {
       subject = new Forum({
         ...subjectObject,
-        idUsers: req.body.userId,
         createdAt: new Date()
       })
       subject.save()
         .then(() => res.status(201).json({ message: 'sujet enregistré' }))
         .catch(error => res.status(400).json({ error: 'erreur serveur' }))
-    }
-    )
+    })
     .catch(error => res.status(404).json({ error: 'user not found' }))
 }
 
 
-exports.getOneSubject = (req, res, next) => {  
-  console.log('params'+req.params.id)
+exports.getOneSubject = (req, res, next) => {
   Forum.findOne({
-    where : { id: req.params.id }    
+    where: { id: req.params.id },
+    include: User
   })
-    .then(
-      (subject) => { res.status(200).json(subject) }
-    )
+    .then((subject) => {
+      Response.count({
+        where: { forumId: req.params.id }
+      })
+        .then((count) => {
+          console.log("compteur" + count)
+        })
+        .catch(error => res.status(404).json({ error: error }))
+      res.status(200).json(subject)
+    })
     .catch(error => res.status(404).json({ error: error }))
 }
 
@@ -56,12 +58,12 @@ exports.getAllSubject = (req, res, next) => {
 
 
 exports.deleteSubject = (req, res, next) => {
-  console.log(req.body.id)
-        Forum.destroy({
-          where: {
-            id: req.body.id
-          }
-        })
-          .then(() => res.status(200).json({ message: 'sujet viré' }))
-          .catch(error => res.status(404).json({ error: 'sujet non supprimé' }))   
+  console.log(req.params.id)
+  Forum.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(() => res.status(200).json({ message: 'sujet viré' }))
+    .catch(error => res.status(404).json({ error: 'sujet non supprimé' }))
 }
